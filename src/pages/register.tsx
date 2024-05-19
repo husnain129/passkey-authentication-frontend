@@ -1,3 +1,4 @@
+import { API_URL } from "@/config";
 import { useUser } from "@/context/user-context";
 import { startRegistration } from "@simplewebauthn/browser";
 
@@ -41,7 +42,7 @@ const RegisterPage = () => {
   const handleRegister = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post("http://localhost:5500/user/register", {
+      const { data } = await axios.post(API_URL + "/user/register", {
         email: user.email,
         password: user.password,
       });
@@ -194,17 +195,16 @@ const AskPassKeyModal = ({
       });
       console.log("authenticationResult >> ", authenticationResult);
 
-      const { data } = await axios.post(
-        "http://localhost:5500/user/register-verify",
-        {
-          userId: (user as any).user.id,
-          credential: authenticationResult,
-        }
-      );
+      const { data } = await axios.post(API_URL + "/user/register-verify", {
+        userId: (user as any).user.id,
+        credential: authenticationResult,
+      });
       if (data.verified) {
         router.push("/login");
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log("register error", error);
+    }
   };
 
   return (

@@ -1,4 +1,5 @@
 "use client";
+import { API_URL } from "@/config";
 import { startAuthentication } from "@simplewebauthn/browser";
 import axios from "axios";
 import Link from "next/link";
@@ -22,7 +23,7 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       const challengeResponse = await axios.post(
-        "http://localhost:5500/user/login-challenge",
+        API_URL + "/user/login-challenge",
         {
           email: user.email,
         }
@@ -32,13 +33,10 @@ const LoginPage = () => {
         challengeResponse.data
       );
 
-      const { data } = await axios.post(
-        "http://localhost:5500/user/login-verify",
-        {
-          email: user.email,
-          credential: authenticationResult,
-        }
-      );
+      const { data } = await axios.post(API_URL + "/user/login-verify", {
+        email: user.email,
+        credential: authenticationResult,
+      });
 
       if (data.verified) {
         router.push("/");
